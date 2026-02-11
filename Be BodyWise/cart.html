@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panier - BodyWise</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Epilogue:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #2D5F3F;
+            --light-green: #4A8B5C;
+            --accent-green: #7CB88F;
+            --cream: #FAF8F5;
+            --warm-white: #FFFFFF;
+            --text-dark: #1A1A1A;
+            --text-gray: #666666;
+            --border-light: #E8E5E0;
+            --error: #E74C3C;
+            --success: #27AE60;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Epilogue', sans-serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--warm-white);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(45, 95, 63, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            cursor: pointer;
+        }
+
+        .cart-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 2rem;
+        }
+
+        .cart-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Cart Items */
+        .cart-items-section {
+            background: var(--warm-white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(45, 95, 63, 0.08);
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 2rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            align-items: start;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 120px;
+            height: 120px;
+            background: var(--cream);
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-price {
+            color: var(--primary-green);
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .qty-button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--border-light);
+            background: var(--warm-white);
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .qty-button:hover {
+            background: var(--cream);
+        }
+
+        .qty-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            padding: 0.4rem;
+            border-radius: 4px;
+        }
+
+        .remove-button {
+            color: var(--error);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .remove-button:hover {
+            text-decoration: underline;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-gray);
+        }
+
+        .empty-cart-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 1rem 2rem;
+            background: var(--primary-green);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .continue-shopping:hover {
+            background: var(--light-green);
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            background: var(--warm-white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(45, 95, 63, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .summary-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-green);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .summary-row.total {
+            padding-top: 1rem;
+            border-top: 2px solid var(--border-light);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-green);
+            margin-bottom: 2rem;
+        }
+
+        .checkout-button {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .checkout-button:hover {
+            background: var(--light-green);
+        }
+
+        .back-button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--border-light);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #D8D5D0;
+        }
+
+        /* Checkout Form */
+        .checkout-section {
+            background: var(--warm-white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(45, 95, 63, 0.08);
+            display: none;
+        }
+
+        .checkout-section.active {
+            display: block;
+        }
+
+        .form-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: 'Epilogue', sans-serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--light-green);
+            box-shadow: 0 0 0 3px rgba(74, 139, 92, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .payment-option {
+            border: 2px solid var(--border-light);
+            border-radius: 10px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .payment-option:hover {
+            border-color: var(--light-green);
+            background: #F5F5F5;
+        }
+
+        .payment-option.selected {
+            border-color: var(--primary-green);
+            background: var(--cream);
+        }
+
+        .payment-option input[type="radio"] {
+            display: none;
+        }
+
+        .payment-logo {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-orange {
+            color: #FF6600;
+        }
+
+        .payment-wave {
+            color: #0098FF;
+        }
+
+        .payment-description {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 1.5rem;
+        }
+
+        .submit-button:hover {
+            background: #229954;
+        }
+
+        .submit-button:disabled {
+            background: var(--text-gray);
+            cursor: not-allowed;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-summary {
+                position: relative;
+                top: 0;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .item-image {
+                width: 100%;
+                max-width: 200px;
+                margin: 0 auto;
+            }
+
+            .item-quantity {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo" onclick="window.location.href='index.html'">BodyWise</div>
+            <div style="color: var(--text-gray);">Panier</div>
+        </div>
+    </header>
+
+    <!-- Cart Page -->
+    <div class="cart-page">
+        <h1 class="page-title">Votre Panier</h1>
+
+        <div class="cart-container">
+            <!-- Cart Items -->
+            <div class="cart-items-section">
+                <div id="cartItems"></div>
+                <div id="emptyCart" class="empty-cart" style="display: none;">
+                    <div class="empty-cart-icon">🛒</div>
+                    <p>Votre panier est vide</p>
+                    <a href="index.html" class="continue-shopping">Continuer vos achats</a>
+                </div>
+            </div>
+
+            <!-- Cart Summary & Checkout -->
+            <div>
+                <!-- Summary -->
+                <div id="cartSummary" class="cart-summary" style="display: none;">
+                    <div class="summary-title">Résumé</div>
+                    <div class="summary-row">
+                        <span>Sous-total</span>
+                        <span id="subtotal">0 FCFA</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Livraison</span>
+                        <span id="shipping">Gratuit</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="total">0 FCFA</span>
+                    </div>
+                    <button class="checkout-button" onclick="showCheckout()">Procéder au paiement</button>
+                    <button class="back-button" onclick="window.location.href='index.html'">Continuer vos achats</button>
+                </div>
+
+                <!-- Checkout Form -->
+                <div id="checkoutForm" class="checkout-section">
+                    <h2 class="form-title">Vos Informations</h2>
+                    <form id="orderForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Prénom</label>
+                                <input type="text" class="form-input" name="firstName" required placeholder="Votre prénom">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nom</label>
+                                <input type="text" class="form-input" name="lastName" required placeholder="Votre nom">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Numéro de téléphone</label>
+                            <input type="tel" class="form-input" name="phone" required placeholder="+221 XX XXX XX XX">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Adresse de livraison</label>
+                            <textarea class="form-input" name="address" required rows="3" placeholder="Votre adresse complète de livraison"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mode de paiement</label>
+                            <div class="payment-methods">
+                                <label class="payment-option" id="orangeOption">
+                                    <input type="radio" name="payment" value="orange" required>
+                                    <div class="payment-logo payment-orange">Orange Money</div>
+                                    <div class="payment-description">Paiement sécurisé</div>
+                                </label>
+                                <label class="payment-option" id="waveOption">
+                                    <input type="radio" name="payment" value="wave" required>
+                                    <div class="payment-logo payment-wave">Wave</div>
+                                    <div class="payment-description">Paiement instantané</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-button">Confirmer le paiement</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== PANIER FONCTIONNALITÉS ==========
+        
+        // Récupérer le numéro de commande suivant
+        function getNextOrderNumber() {
+            let lastNumber = localStorage.getItem('bodywise_last_order') || '0';
+            lastNumber = parseInt(lastNumber) + 1;
+            localStorage.setItem('bodywise_last_order', lastNumber);
+            return 'BW' + String(lastNumber).padStart(6, '0'); // BW000001, BW000002, etc.
+        }
+
+        // Récupérer le panier du localStorage
+        function getCart() {
+            return JSON.parse(localStorage.getItem('bodywise_cart')) || [];
+        }
+
+        // Sauvegarder le panier
+        function saveCart(cart) {
+            localStorage.setItem('bodywise_cart', JSON.stringify(cart));
+        }
+
+        // Afficher le panier
+        function displayCart() {
+            const cart = getCart();
+            const cartItems = document.getElementById('cartItems');
+            const cartSummary = document.getElementById('cartSummary');
+            const emptyCart = document.getElementById('emptyCart');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '';
+                emptyCart.style.display = 'block';
+                cartSummary.style.display = 'none';
+                return;
+            }
+
+            emptyCart.style.display = 'none';
+            cartSummary.style.display = 'block';
+
+            let html = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                html += `
+                    <div class="cart-item">
+                        <div class="item-image">
+                            <img src="${item.image}" alt="${item.name}">
+                        </div>
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-price">${item.price.toLocaleString()} FCFA</div>
+                            <div class="item-quantity">
+                                <button class="qty-button" onclick="updateQty(${index}, -1)">-</button>
+                                <input type="number" class="qty-input" value="${item.quantity}" min="1" onchange="setQty(${index}, this.value)">
+                                <button class="qty-button" onclick="updateQty(${index}, 1)">+</button>
+                                <button class="remove-button" onclick="removeItem(${index})">Supprimer</button>
+                            </div>
+                            <div style="color: var(--text-gray); font-size: 0.9rem;">
+                                Sous-total: ${itemTotal.toLocaleString()} FCFA
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartItems.innerHTML = html;
+
+            // Mettre à jour le résumé
+            document.getElementById('subtotal').textContent = total.toLocaleString() + ' FCFA';
+            document.getElementById('total').textContent = total.toLocaleString() + ' FCFA';
+        }
+
+        // Ajouter une quantité
+        function updateQty(index, change) {
+            const cart = getCart();
+            cart[index].quantity += change;
+            if (cart[index].quantity < 1) cart[index].quantity = 1;
+            saveCart(cart);
+            displayCart();
+        }
+
+        // Définir la quantité
+        function setQty(index, qty) {
+            const cart = getCart();
+            cart[index].quantity = Math.max(1, parseInt(qty) || 1);
+            saveCart(cart);
+            displayCart();
+        }
+
+        // Supprimer un article
+        function removeItem(index) {
+            const cart = getCart();
+            cart.splice(index, 1);
+            saveCart(cart);
+            displayCart();
+        }
+
+        // Afficher le formulaire de paiement
+        function showCheckout() {
+            document.getElementById('cartSummary').style.display = 'none';
+            document.getElementById('checkoutForm').classList.add('active');
+        }
+
+        // Sélectionner le mode de paiement
+        document.getElementById('orangeOption')?.addEventListener('click', function() {
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input[type="radio"]').checked = true;
+        });
+
+        document.getElementById('waveOption')?.addEventListener('click', function() {
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input[type="radio"]').checked = true;
+        });
+
+        // Soumettre la commande
+        document.getElementById('orderForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const cart = getCart();
+            const orderNumber = getNextOrderNumber(); // Numéro séquentiel
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            const data = {
+                orderNumber: orderNumber,
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                phone: formData.get('phone'),
+                address: formData.get('address'),
+                payment: formData.get('payment'),
+                items: cart,
+                total: total,
+                date: new Date().toLocaleString('fr-FR'),
+                status: 'En attente'
+            };
+
+            // Préparer le message WhatsApp pour le CLIENT
+            const paymentMethod = data.payment === 'orange' ? 'Orange Money' : 'Wave';
+            const itemsList = data.items.map(item => `• ${item.name} x${item.quantity} = ${(item.price * item.quantity).toLocaleString()} FCFA`).join('%0A');
+            
+            const whatsappMessageClient = `🎉 *Merci pour votre commande !*%0A%0A✅ *Numéro de commande :* ${data.orderNumber}%0A%0A📦 *Détail de la commande :*%0A${itemsList}%0A%0A💰 *Montant total :* ${data.total.toLocaleString()} FCFA%0A💳 *Mode de paiement :* ${paymentMethod}%0A%0A👤 *Vos informations :*%0ANom : ${data.firstName} ${data.lastName}%0ATél : ${data.phone}%0AAdresse : ${data.address}%0A%0ANous vous contacterons très bientôt pour finaliser votre commande. Merci de votre confiance ! 🌿`;
+
+            // Préparer le message WhatsApp pour le VENDEUR
+            const whatsappMessageVendor = `🎉 *Nouvelle Commande !*%0A%0A✅ *Numéro de commande :* ${data.orderNumber}%0A%0A👤 *Client :*%0ANom : ${data.firstName} ${data.lastName}%0ATél : ${data.phone}%0AAdresse : ${data.address}%0A%0A📦 *Détail de la commande :*%0A${itemsList}%0A%0A💰 *Montant total :* ${data.total.toLocaleString()} FCFA%0A💳 *Mode de paiement :* ${paymentMethod}%0A%0A⏳ En attente de confirmation de paiement...`;
+
+            // 1. Sauvegarder dans localStorage (pour le dashboard)
+            let orders = JSON.parse(localStorage.getItem('bodywise_orders')) || [];
+            orders.push(data);
+            localStorage.setItem('bodywise_orders', JSON.stringify(orders));
+
+            // 2. Envoyer au Google Sheets
+            sendToGoogleSheets(data);
+
+            // Vider le panier
+            localStorage.removeItem('bodywise_cart');
+
+            // Nettoyer le numéro du client
+            const cleanPhone = data.phone.replace(/\s+/g, '').replace(/\D/g, '');
+            
+            // 3. Envoyer le message AU CLIENT
+            const whatsappUrlClient = `https://wa.me/${cleanPhone}?text=${whatsappMessageClient}`;
+            window.open(whatsappUrlClient, '_blank');
+
+            // 4. Envoyer le message AU VENDEUR avec un délai
+            setTimeout(() => {
+                const yourNumber = '221775454174'; // Ton numéro
+                const whatsappUrlVendor = `https://wa.me/${yourNumber}?text=${whatsappMessageVendor}`;
+                window.open(whatsappUrlVendor, '_blank');
+            }, 1000);
+
+            // Afficher un message de confirmation
+            alert('✅ Merci pour votre commande ! Vous allez recevoir un message WhatsApp avec les détails.');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        });
+
+        // Envoyer les données au Google Sheets
+        function sendToGoogleSheets(data) {
+            const googleSheetsUrl = 'https://script.google.com/macros/s/AKfycbzekmz9CF1RgChm_6Rpo_OBqB2t71rB6uEnbz0YV65TnY6lijBcqph9sEyJ6z5phS1H1A/exec';
+            
+            fetch(googleSheetsUrl, {
+                method: 'POST',
+                body: JSON.stringify({
+                    orderNumber: data.orderNumber,
+                    lastName: data.lastName,
+                    firstName: data.firstName,
+                    phone: data.phone,
+                    address: data.address,
+                    payment: data.payment,
+                    total: data.total,
+                    date: data.date,
+                    status: data.status
+                })
+            }).catch(error => console.log('Envoi Google Sheets:', error));
+        }
+
+        // Afficher le panier au chargement
+        displayCart();
+    </script>
+</body>
+</html>
